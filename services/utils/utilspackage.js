@@ -1,0 +1,20 @@
+//使用方法 直接require這個 package就好
+exports.axiosJs = require('./axios');
+exports.bullJs = require('./bull');
+exports.cacheJs = require('./cache');
+exports.cheerioJs = require('./cheerio');
+exports.dayJs = require('./day');
+exports.encryptJs = require('./encrypt');
+exports.faststringifyJs = require('./faststringify');
+exports.fsextraJs = require('./fsextra');
+exports.logJs = require('./log');
+exports.lrucacheJs = require('./lrucache');
+exports.mathJs = require('./math');
+exports.momentJs = require('./moment');
+exports.nodemailerJs = require('./nodemailer');
+exports.osJs = require('./os');
+exports.qrcodeJs = require('./qrcode');
+exports.smsJs = require('./sms');
+exports.lodashJs = require('./lodash');
+exports.validatorJs = require('./validator');
+
