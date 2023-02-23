@@ -11,7 +11,7 @@
     "dev": "set NODE_ENV=dev&&fastify start -w app.js",
     "prod": "set NODE_ENV=prod&&fastify start -w app.js",
     "fastify": "set NODE_ENV=dev&&fastify start -w app.js",
-    "defaultfastify":"fastify start -w -l info app.js"
+    "defaultfastify": "fastify start -w -l info app.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "adm-zip": "^0.5.10",
     "axios": "^1.3.2",
     "bcryptjs": "^2.4.3",
+    "bull": "^4.10.4",
     "cheerio": "^1.0.0-rc.12",
     "config": "^3.3.9",
     "crypto-js": "^4.1.1",
@@ -31,17 +32,24 @@
     "fastify-cli": "^4.4.0",
     "fastify-plugin": "^3.0.0",
     "fs-extra": "^11.1.0",
+    "ioredis": "^5.3.1",
     "jsonwebtoken": "^9.0.0",
+    "knex": "^2.4.2",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
+    "mongodb": "^5.0.1",
+    "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.1",
     "os-locale": "^6.0.2",
     "qrcode": "^1.5.1",
+    "redis": "^4.6.4",
+    "redis-commands": "^1.7.0",
     "uuid": "^9.0.0",
     "validator": "^13.9.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "tap": "^16.1.0"
   }
 }
