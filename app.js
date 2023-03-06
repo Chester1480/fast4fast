@@ -6,11 +6,15 @@ const AutoLoad = require('@fastify/autoload')
 const config = require('config');
 const cpuInfo = require('os').cpus();
 
+const schedule = require('./services/functions/schedule');
+
 // const osLocale = require('os-locale'); //可以查看user 系統語系
 
 
 module.exports = async function (fastify, opts) {
   
+  // await schedule.OneMinuteJob();
+
   // 攔截錯誤
   fastify.setErrorHandler(async (error, request, reply) => {
     // request.headers.host: 'localhost:3000',
