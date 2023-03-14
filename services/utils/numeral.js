@@ -21,8 +21,8 @@ exports.NumberAdd = async (number, beAddNumber) => {
  */
 exports.NumberSubtract = async (number, beSubtractNumber) => {
     number = numeral(number);
-    let beSubtractNumber = number.subtract(beSubtractNumber);
-    return subtractedNumber;
+    let subtracedtNumber = number.subtract(beSubtractNumber);
+    return subtracedtNumber;
 }
 /**
  * 1*100

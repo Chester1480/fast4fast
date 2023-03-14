@@ -16,7 +16,6 @@ module.exports = async function (fastify, opts) {
 
  
     fastify.get('/createUser', async function (request, reply) {
-        
         let { count } = request.query;
         if (!count) {
             count = 1;
