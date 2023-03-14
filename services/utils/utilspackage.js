@@ -17,4 +17,5 @@ exports.qrcodeJs = require('./qrcode');
 exports.smsJs = require('./sms');//簡訊
 exports.lodashJs = require('./lodash');//計算用
 exports.validatorJs = require('./validator');//驗證用
+exports.numeralJs = require('./numeral');//數字用
 
