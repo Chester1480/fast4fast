@@ -12,13 +12,20 @@ const wss = require('./services/functions/ws');
 const { mongo } = require('./services/database/databasepackage');
 const { dayJs } = require('./services/utils/utilspackage');
 // const osLocale = require('os-locale'); //可以查看user 系統語系
-
+const y18n = require("y18n");
 
 module.exports = async function (fastify, opts) {
   
-  fastify.register(require('@fastify/cors'), {
-    // put your options here
-  })
+  // const __ = y18n({
+  //   locale: 'tw',
+  //   directory: './locales'
+  // }).__
+  
+  // fastify.register(require('@fastify/cors'), {
+  //   origin: '*',
+  //   methods: 'GET,PUT,POST,DELETE,OPTIONS',
+  //   // put your options here
+  // })
 
   //#region 流量控制
   fastify.register(require('@fastify/rate-limit'), {
