@@ -16,6 +16,28 @@ const { dayJs } = require('./services/utils/utilspackage');
 
 module.exports = async function (fastify, opts) {
   
+  fastify.register(require('@fastify/cors'), {
+    // put your options here
+  })
+
+  //#region 流量控制
+  fastify.register(require('@fastify/rate-limit'), {
+    max: 1000,
+    timeWindow: 5000,
+    cache: 10000,
+    // allowList: ['127.0.0.1'],
+    // redis: new Redis({ host: '127.0.0.1' }),
+    keyGenerator: function (req) { /* ... */ },
+    errorResponseBuilder: function (req, context) { /* ... */ },
+    addHeaders: { // default show all the response headers when rate limit is reached
+      'x-ratelimit-limit': true,
+      'x-ratelimit-remaining': true,
+      'x-ratelimit-reset': true,
+      'retry-after': true
+    }
+  });
+  //#endregion
+  
   //#region 排程
   // await schedule.OneMinuteJob();
   //#endregion
@@ -38,6 +60,50 @@ module.exports = async function (fastify, opts) {
       return error;
     }
   });
+
+  // await fastify.register(require('@fastify/swagger'), {
+  //   swagger: {
+  //     info: {
+  //       title: 'Test swagger',
+  //       description: 'Testing the Fastify swagger API',
+  //       version: '0.1.0'
+  //     },
+  //     externalDocs: {
+  //       url: 'https://swagger.io',
+  //       description: 'Find more info here'
+  //     },
+  //     host: 'localhost',
+  //     schemes: ['http'],
+  //     consumes: ['application/json'],
+  //     produces: ['application/json'],
+  //     tags: [
+  //       { name: 'user', description: 'User related end-points' },
+  //       { name: 'code', description: 'Code related end-points' }
+  //     ],
+  //     definitions: {
+  //       User: {
+  //         type: 'object',
+  //         required: ['id', 'email'],
+  //         properties: {
+  //           id: { type: 'string', format: 'uuid' },
+  //           firstName: { type: 'string' },
+  //           lastName: { type: 'string' },
+  //           email: {type: 'string', format: 'email' }
+  //         }
+  //       }
+  //     },
+  //     securityDefinitions: {
+  //       apiKey: {
+  //         type: 'apiKey',
+  //         name: 'apiKey',
+  //         in: 'header'
+  //       }
+  //     }
+  //   }
+  // })
+  
+  // await fastify.ready()
+  // fastify.swagger()
 
 
   // This loads all plugins defined in plugins
