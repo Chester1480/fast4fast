@@ -68,6 +68,8 @@ module.exports = async function (fastify, opts) {
     }
   });
 
+  
+
   // await fastify.register(require('@fastify/swagger'), {
   //   swagger: {
   //     info: {
@@ -116,6 +118,14 @@ module.exports = async function (fastify, opts) {
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application
+  
+  fastify.addHook('onRequest', async (req, reply) => {
+    console.log(req);
+    //url
+    //method 
+    
+  });
+
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: Object.assign({}, opts)
