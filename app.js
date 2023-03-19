@@ -13,9 +13,9 @@ const { mongo } = require('./services/database/databasepackage');
 const { dayJs } = require('./services/utils/utilspackage');
 // const osLocale = require('os-locale'); //可以查看user 系統語系
 const y18n = require("y18n");
+const telegram = require('./services/functions/telegram');
 
 module.exports = async function (fastify, opts) {
-  
   // const __ = y18n({
   //   locale: 'tw',
   //   directory: './locales'
