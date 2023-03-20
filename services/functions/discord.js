@@ -1,21 +1,27 @@
-const config = require('config');
 // const mongo = require('../../share/database/mongo');
-const { mongo , redis }  = require('../../services/database/databasepackage')
+//database
+const { mongo, redis } = require('../../services/database/databasepackage')
+const config = require('config');
+
 const { Client, MessageEmbed } = require('discord.js');
+const { lodashJs } = require('../../services/utils/utilspackage');
+const stock = require('./stock');
+const openai = require('../sdk/openai');
+
 const client = new Client({
     partials: ['MESSAGE']
 });
-const { lodashJs } = require('../../services/utils/utilspackage');
-const stock = require('./stock');
 
 const prefix = '$';
 const crudArray = [prefix + 'add', prefix + 'update', prefix + 'delete'];
 const crudChArray = [prefix + '新增', prefix + '修改', prefix + '刪除'];
+
 //固定指令
 const fixedCommansSet = new Set([
     prefix + '股價',
     prefix + '指令',
     prefix + 'gif',
+    //#region 暫時先關閉功能
     // prefix + '新增內容',
     // prefix + '增加內容',
     // prefix + '吃啥',
@@ -23,6 +29,7 @@ const fixedCommansSet = new Set([
     // prefix + '修改',
     // prefix + '刪除',
     // prefix + 'help'
+    //#endregion
 ]);
 // const emoji = [':003:', ':004:', ':emote:'];
 
@@ -37,35 +44,45 @@ client.on("message", async function (message) {
         const args = message.content.split(' ');
         //固定指令
         if (fixedCommansSet.has(args[0])) { 
-            await Strategies(args[0], args[1],message);
+            const result = await strategies(args[0], args[1]);
+            await message.channel.send(result);
         }
     }
     catch (error) {
-        
+        await message.channel.send("發生錯誤囉~");
     }
 })
 
-const Strategies = async (type, message,message) => {
+const strategies = async (type, text) => {
     
     const fns = {
-        '$gpt': fn = async (message) => {
-            await gpt(message);
+        '$gpt': fn = async (text) => {
+            return await chatgpt(text);
         },
-        '$股價': fn = async (message) => { 
-            await queryStockById(message);
+        '$股價': fn = async (text) => { 
+            return await queryStockById(text);
         } ,
-        '$指令': fn = async (message) => {
-            
+        '$指令': fn = async (text) => {
+            return await getfixedCommans();
         },
-        '$gif': fn = async (message) => {
-            await getGif(message);
+        '$gif': fn = async (text) => {
+            return await getGif(text);
         },
     }
-    const result = await fns[type](payload);
+    const result = await fns[type](text);
+    return result;
 }
 
-const gpt = async (message) => { 
+/**
+ * 取得固定指令
+ */
+const getfixedCommans = async () => { 
+   return "目前指令: "+Array.from(fixedCommansSet).join(',');
+}
 
+
+const chatgpt = async (message) => { 
+    const result = await openai.chatgpt(message);
 }
 
 //查詢股價

@@ -4,6 +4,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = config.get('telegram').bot1;
 const bot = new TelegramBot(token, { polling: true });
 const chatparse = require('./chatparse');
+const openai = require('../sdk/openai');
 
 bot.on('message', async function (msg){
     // const chatId = msg.chat.id;
@@ -41,13 +42,15 @@ const Strategies = async (type, payload) => {
 
 async function groupParse(payload){
     const { chatId, userName, language, text } = payload;
+    const result = await openai.chatgpt(text);
     console.log("groupParse")
     // const parseResult = await stringParse(text , language);
 
 }
 
 async function privateParse(payload){
-    const { chatId,userName,language,text } =  payload;
+    const { chatId, userName, language, text } = payload;
+    const result = await openai.chatgpt(text);
     console.log("privateParse")
 }
 
