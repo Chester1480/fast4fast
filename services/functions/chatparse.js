@@ -1,22 +1,23 @@
-const { mongo , redis }  = require('../../services/database/databasepackage')
-const { lodashJs } = require('../../services/utils/utilspackage');
-
-
 const prefix = '$';
-
 //固定指令
 const GetFixCommandSet = () => {
     const crudMap = new Set([
-        `${prefix}gpt`,
+        prefix+'gpt',
         // `${prefix}add`,
         // `${prefix}update`,
         // `{prefix}delete`,
+        prefix + '',
+        prefix + '指令',
+        prefix + 'gif',
     ]);
     const crudChMap = new Set([
-        `${prefix}gpt`,
+        prefix+'gpt',
         // `${prefix}新增`,
         // `${prefix}修改`,
         // `{prefix}刪除`,
+        prefix + '股價',
+        prefix + '指令',
+        prefix + 'gif',
     ]);
     return {
         crudMap,crudChMap
@@ -25,25 +26,19 @@ const GetFixCommandSet = () => {
 
 exports.ParseCommand = async (message) => {
     const { crudMap } = GetFixCommandSet();
-
-    if (!message.content.startsWith(prefix)) {
-        return {
-            status:0,
-            message:'前墜錯誤',
-        };;
+    if (crudMap.has(message)) {
+        return true;
+    } else {
+        return false;
     }
-   
-    const args = message.split(' ');
-    return {
-        status:1,
-        message:args[1],
-    };
 }
 
 exports.ChParseCommand = async (message) => {
     const {  crudChMap } = GetFixCommandSet();
     if (crudChMap.has(message)) {
-        
+        return true;
+    } else {
+        return false;
     }
     
 }
