@@ -1,26 +1,39 @@
-// const mongo = require('../../share/database/mongo');
 //database
 const { mongo, redis } = require('../../services/database/databasepackage')
-const config = require('config');
 
-const { Client, MessageEmbed } = require('discord.js');
 const { lodashJs } = require('../../services/utils/utilspackage');
+
+const config = require('config');
+const token = config.get('discord').TOKEN;
 const stock = require('./stock');
 const openai = require('../sdk/openai');
 
+const {
+    REST,
+    SlashCommandBuilder,
+    Routes,
+    Client,
+    MessageEmbed,
+    GatewayIntentBits,
+    Events
+} = require('discord.js');
+
 const client = new Client({
-    partials: ['MESSAGE']
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildMessages,
+    ]
 });
 
 const prefix = '$';
-const crudArray = [prefix + 'add', prefix + 'update', prefix + 'delete'];
-const crudChArray = [prefix + '新增', prefix + '修改', prefix + '刪除'];
-
 //固定指令
 const fixedCommansSet = new Set([
     prefix + '股價',
     prefix + '指令',
-    prefix + 'gif',
+    prefix + 'gpt',
+    // prefix + 'gif',
     //#region 暫時先關閉功能
     // prefix + '新增內容',
     // prefix + '增加內容',
@@ -33,28 +46,71 @@ const fixedCommansSet = new Set([
 ]);
 // const emoji = [':003:', ':004:', ':emote:'];
 
-client.login(config.get('discord').TOKEN);
+client.login(token);
+
 client.on("ready", async function () {
-    console.log('discord bot login');
+    const d = new Date();
+    const result = d.toISOString();
+    console.log('discord bot login: '+ result);
 });
-client.on("message", async function (message) { 
+
+client.on(Events.InviteCreate, async interaction => {
+    console.log(interaction);
+
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === 'ping') {
+      await interaction.reply('Pong!');
+    }
+
+});
+const isBusy = 0;
+client.on("messageCreate", async function (message) { 
     if (message.author.bot) return;
+    //#region 資料結構
+    //message.author.username
+    //message.author.id
+    //message.author.avatar
+    //message.channelId
+    //message.guildId
+    //message.createdTimestamp
+    //message.content
+
+    //message.guild.id
+    //message.guild.name
+    //message.guild.members
+    //message.guild.channels
+    //message.guild.channels
+    //#endregion
+
     try { 
         if (!message.content.startsWith(prefix)) return;
         const args = message.content.split(' ');
-        //固定指令
-        if (fixedCommansSet.has(args[0])) { 
-            const result = await strategies(args[0], args[1]);
-            await message.channel.send(result);
-        }
+        //if (isBusy == 0) {
+            //固定指令
+            if (fixedCommansSet.has(args[0])) { 
+                const result = await strategies(args[0],args[1]);
+                //isBusy = 1;
+                //console.log(result.choices)
+                await message.channel.send(JSON.stringify(result.choices[0].text));
+                //isBusy = 0;
+            }
+        // } else {
+        //     await message.channel.send("上一個問題回覆中,請稍等.....");
+        // }
+      
     }
     catch (error) {
-        await message.channel.send("發生錯誤囉~");
+        await message.channel.send(error);
     }
 })
 
 const strategies = async (type, text) => {
-    
+
+    // const args = message.content.split(' ');
+    // if (fixedCommansSet.has(args[0])) { 
+    //     const result = await fns[args[0]](args[1]);
+    // }
     const fns = {
         '$gpt': fn = async (text) => {
             return await chatgpt(text);
@@ -80,9 +136,9 @@ const getfixedCommans = async () => {
    return "目前指令: "+Array.from(fixedCommansSet).join(',');
 }
 
-
 const chatgpt = async (message) => { 
-    const result = await openai.chatgpt(message);
+    const result = await openai.Chatgpt(message);
+    return result;
 }
 
 //查詢股價
@@ -115,11 +171,32 @@ const queryStockById = async (stockId) => {
     }
 }
 
-// 指令裡面加新內容 
+const addChatLog = async (message) => {
+    const { author, createdTimestamp, guild } = message;
+    const ChatLog = {
+        botType: "discord",
+        guildId: guild.id,
+        userId: author.id,
+        guild: { id: guild.id, name: guild.name },
+        user: { id: author.id, name: author.username },
+        content: [text],
+        createdTimestamp,
+    }
+    result = await mongo.insert('DiscordChatLog', [ChatLog]);
+    return result;
+}
+
+const getChatLogs = async (parameters) => {
+    const { } = parameters;
+    const result = await mongo.find("DiscordChatLog",{});
+    return result;
+}
+
+
+//取得gif
 const getGif = async (message) => {
 
 }
-
 
 // client.on("message", async function (message) {
 //     // const discordInterval = config.get('environment') + ':discordCache';
@@ -376,13 +453,7 @@ const addCommand = async (message, key, text) => {
     result = await mongo.insert('command', [commad]);
     return result;
 }
-//修改指令內容
-const updateCommand = async (command, text) => {
-    const query = { commandString: command.commandString };
-    const set = { $set: { content: [text] } };
-    const result = await mongo.update('command', query, set);
-    return result;
-}
+
 // 新增指令表陣列內的指令
 const addTotalCommandKeys = async (message, key) => {
     let result = await mongo.findOne('guildCommmad', { commandString: '指令' });
@@ -406,22 +477,7 @@ const addTotalCommandKeys = async (message, key) => {
         return;
     }
 }
-// 刪除指令
-const deleteCommand = async (key) => {
-    const result = await mongo.deleteOne('command', { commandString: key });
-    return result;
-}
-// 刪除指令表陣列內的指令
-const deleteTotalCommandKeys = async (key) => {
-    let result = await mongo.findOne('command', { commandString: '指令' });
-    let tmpSet = new Set([...result.content]);
-    tmpSet.delete(key);
-    result.content = Array.from(tmpSet);
-    const query = { commandString: '指令' };
-    const set = { $set: { content: result.content } };
-    await mongo.update('command', query, set);
-    return;
-}
+
 // 查詢指令表 顯示目前已存在的指令
 const selectAllCommands = async () => {
     const result = await mongo.findOne('guildCommmad', { commandString: '指令' });

@@ -14,6 +14,7 @@ const { dayJs } = require('./services/utils/utilspackage');
 // const osLocale = require('os-locale'); //可以查看user 系統語系
 const y18n = require("y18n");
 //const telegram = require('./services/functions/telegram');
+const discord = require('./services/functions/discord');
 
 module.exports = async function (fastify, opts) {
   // const __ = y18n({

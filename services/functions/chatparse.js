@@ -42,3 +42,23 @@ exports.ChParseCommand = async (message) => {
     }
     
 }
+
+
+exports.FixCommands = async (message) => {
+    const fixedCommansSet = new Set([
+        prefix + '股價',
+        prefix + '指令',
+        prefix + 'gpt',
+        // prefix + 'gif',
+        //#region 暫時先關閉功能
+        // prefix + '新增內容',
+        // prefix + '增加內容',
+        // prefix + '吃啥',
+        // prefix + '新增',
+        // prefix + '修改',
+        // prefix + '刪除',
+        // prefix + 'help'
+        //#endregion
+    ]);
+    return fixedCommansSet;
+}
