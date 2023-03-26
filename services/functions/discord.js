@@ -8,12 +8,14 @@ const token = config.get('discord').TOKEN;
 const stock = require('./stock');
 const openai = require('../sdk/openai');
 
+
 const {
     REST,
     SlashCommandBuilder,
     Routes,
     Client,
     MessageEmbed,
+    EmbedBuilder ,
     GatewayIntentBits,
     Events
 } = require('discord.js');
@@ -65,6 +67,7 @@ client.on(Events.InviteCreate, async interaction => {
 
 });
 const isBusy = 0;
+
 client.on("messageCreate", async function (message) { 
     if (message.author.bot) return;
     //#region 資料結構
@@ -89,10 +92,16 @@ client.on("messageCreate", async function (message) {
         //if (isBusy == 0) {
             //固定指令
             if (fixedCommansSet.has(args[0])) { 
-                const result = await strategies(args[0],args[1]);
+                const result = await strategies(args[0], args[1]);
+                //console.log(result);
                 //isBusy = 1;
                 //console.log(result.choices)
-                await message.channel.send(JSON.stringify(result.choices[0].text));
+                const embed = new EmbedBuilder()
+                    //.setColor("#A0D6B4") //左側的標籤顏色
+                    // .setTitle(args[0])
+                    //.setDescription("testtesttesttesttesttesttesttesttesttesttest \n testtesttesttesttesttesttesttesttesttesttest")
+                    .setDescription(JSON.stringify(result.choices[0].text).replaceAll("\\n","\n").trim())
+                await message.channel.send({ embeds: [embed] });
                 //isBusy = 0;
             }
         // } else {

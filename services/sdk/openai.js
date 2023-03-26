@@ -3,8 +3,30 @@ const config = require('config');
 const secretKey = config.get('openai').secretKey;
 const axios = require('axios');
 
-const stream = async () => {
-    
+const postStreamResponse = async (url, headers,data) => {
+    return new Promise(async (resolve, reject) => { 
+        try {
+            let paramters = {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(data),
+            } 
+            const response = await fetch(url, paramters);
+            const reader = response.body.getReader();
+            let content = "";
+            let decoder = new TextDecoder('utf-8');
+            while (true) {
+                const { value, done } = await reader.read();
+                content += decoder.decode(value);;
+                console.log(content)
+                if (done) break;
+            }
+            return resolve(content);
+        } catch (error) {
+            console.log(error);
+            return reject(error);
+        }
+    })
 }
 
 const post = async function (url, headers,data) {
@@ -35,19 +57,17 @@ exports.Chatgpt = async (question) => {
     const data = {
         model: "text-davinci-003",
         prompt: question,
-        temperature: 0.4,
-        max_tokens: 300,
+        temperature: 0.2,
+        max_tokens: 1000,
         // stream: true,
     };
     const result = await post(url, headers, data);
+    console.log(result);
     return result;
-    // const result = await axios({
-    //     url:"https://api.openai.com/v1/completions",
-    //     method: 'post',
-    //     headers,
-    //     data
-    // })
-    // console.log(result)
+
+    // const result = await post(url, headers, data);
+    // return result;
+
     //#region 回傳格式
     // {
     //     "id": "cmpl-6xlGJ4RJ8YfYbf4jmuojGou1iauJs",
