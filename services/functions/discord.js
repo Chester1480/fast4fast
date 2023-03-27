@@ -100,7 +100,7 @@ client.on("messageCreate", async function (message) {
                     //.setColor("#A0D6B4") //左側的標籤顏色
                     // .setTitle(args[0])
                     //.setDescription("testtesttesttesttesttesttesttesttesttesttest \n testtesttesttesttesttesttesttesttesttesttest")
-                    .setDescription(JSON.stringify(result.choices[0].text).replaceAll("\\n","\n").trim())
+                    .setDescription(JSON.stringify(result.choices[0].message.content).replaceAll("\\n","\n").trim())
                 await message.channel.send({ embeds: [embed] });
                 //isBusy = 0;
             }

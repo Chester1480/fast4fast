@@ -48,17 +48,17 @@ const post = async function (url, headers,data) {
 
 exports.Chatgpt = async (question) => {
 
-    const url = "https://api.openai.com/v1/completions";
+    const url = "https://api.openai.com/v1/chat/completions";
 
     const headers = {
           "Content-Type": 'application/json',
           "Authorization": `Bearer `+secretKey
     };
     const data = {
-        model: "text-davinci-003",
-        prompt: question,
-        temperature: 0.2,
-        max_tokens: 1000,
+        model: "gpt-3.5-turbo",
+        messages: [{role: "user", content: question}]
+        // temperature: 0.2,
+        // max_tokens: 1000,
         // stream: true,
     };
     const result = await post(url, headers, data);
