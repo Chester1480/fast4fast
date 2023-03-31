@@ -31,14 +31,14 @@ exports.mset = async function (data) {
     //     {key: "myKey", val: obj, ttl: 10000},
     //     {key: "myKey2", val: obj2},
     // ]
-    return myCache.mset(data)
+    return nodeCache.mset(data)
 }
 
 exports.mget = async function (keys) {
     //keys =['A','B']
-    return myCache.mget(keys);
+    return nodeCache.mget(keys);
 }
 
 exports.del = async function (keys) {
-    return myCache.del(keys);
+    return nodeCache.del(keys);
 }

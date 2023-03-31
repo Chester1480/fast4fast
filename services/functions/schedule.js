@@ -25,44 +25,85 @@ const schedule = require('node-schedule');
 // └───────────────────────── second (0 - 59, OPTIONAL)
 //#endregion
 
-const jobSwitch = new Map();
-
 let OneMinuteSchedule;
 let TenMinutesSchedule;
 let HalfhourSchedule;
 let OnehourSchedule;
 let EverydaySchedule;
 
-function GetJobName() {
-    const language = new Map([
-        ['OneMinuteJob', "一分鐘排程"]
-        ['TenMinutesJob', "十分鐘排程"]
-        ['HalfhourJob', "半小時鐘排程"]
-        ['OnehourJob', "一小時排程"]
-        ['EverydayJob', "每天排程"]
-    ]);
-    return language;
+exports.excute = async function () { 
+    await InitSwitch();
+    await InitJobNameMap();
+    await InitCronMap();
+
+    await OneMinuteJob();
 }
 
-function GetCronMap() {
-    let cronMap = new Map([
-        ['OneMinuteJob', '*/1 * * * *']
-        ['TenMinutesJob', '*/10 * * * *']
-        ['HalfhourJob', '*/30 * * * *']
-        ['OnehourJob', '*/60 * * * *']
-        ['EverydayJob', '*/1440 * * * *']
-    ])
-    return cronMap;
+const InitJobNameMap = async function () {
+    const jobName = {
+        'OneMinuteJobName':  "一分鐘排程",
+        'TenMinutesJobName':"十分鐘排程",
+        'HalfhourJobName': "半小時鐘排程",
+        'OnehourJobName':  "一小時排程",
+        'EverydayJobName': "每天排程",
+    }
+    for await (const [key,value] of Object.entries(jobName)) {
+        await cacheJs.set(key, value);
+    }
 }
 
-exports.OneMinuteJob = async function () {
+const InitCronMap = async function () {
+    const cron = {
+        'cronOneMinuteJob': '* * * * *',
+        'cronTenMinutesJob': '*/10 * * * *',
+        'cronHalfhourJob': '*/30 * * * *',
+        'cronOnehourJob': '*/60 * * * *',
+        'cronEverydayJob': '*/1440 * * * *',
+    }
+    for await (const [key,value] of Object.entries(cron)) {
+        await cacheJs.set(key, value);
+    }
+}
+
+const InitSwitch = async function () {
+    const jobSwitchArray = [
+        'OneMinuteJob',
+        'TenMinutesJob',
+        'HalfhourJob',
+        'OnehourJob',
+        'EverydayJob',
+    ]
+    for await (const item of jobSwitchArray) {
+        await cacheJs.set(item, 1);
+    }
+}
+
+exports.getJobSwitch = async function () { 
+    let jobSwitchArray = [
+        'OneMinuteJob',
+        'TenMinutesJob',
+        'HalfhourJob',
+        'OnehourJob',
+        'EverydayJob',
+    ]
+    let object = {} ;
+    for await (const item of jobSwitchArray) {
+        object[item] = await cacheJs.get(item);
+    }
+    return object;
+}
+
+exports.setJobSwitch = async function (jobName, status) { 
+    await cacheJs.set(jobName, status);
+}
+
+const OneMinuteJob = async function () {
     const jobsLabel = "OneMinuteJob";
-    jobSwitch.set(jobsLabel, 1);
-    const cron = GetCronMap().get(jobsLabel)
-    OneMinuteSchedule = schedule.scheduleJob(cron, function () {
-        const status = jobSwitch.get(jobsLabel);
+    const cron = cacheJs.get("cron"+jobsLabel);
+    OneMinuteSchedule = schedule.scheduleJob(cron, async function () {
+        const status = await cacheJs.get(jobsLabel)
         if (status) {
-            
+            console.log('OneMinuteJob')
         }
     });
 }
@@ -81,57 +122,48 @@ exports.OneMinuteJob = async function () {
 // }
 //#endregion
 
-exports.TenMinutesJob = async function () {
+const TenMinutesJob = async function () {
     const jobsLabel = "TenMinutesJob";
-    jobSwitch.set(jobsLabel, 1);
-    const cron = GetCronMap().get(jobsLabel)
-    TenMinutesSchedule= schedule.scheduleJob(cron, function () {
-        const status = jobSwitch.get(jobsLabel);
+    const cron = cacheJs.get("cron"+jobsLabel);
+    TenMinutesSchedule = schedule.scheduleJob(cron, async function () {
+        const status = await cacheJs.get(jobsLabel)
         if (status) {
-            
         }
     });
 }
 
-exports.HalfhourJob = async function () {
+const HalfhourJob = async function () {
     const jobsLabel = "HalfhourJob";
-    jobSwitch.set(jobsLabel, 1);
-    const cron = GetCronMap().get(jobsLabel)
-    TenMinutesSchedule= schedule.scheduleJob(cron, function () {
-        const status = jobSwitch.get(jobsLabel);
+    const cron = cacheJs.get("cron"+jobsLabel);
+    HalfhourSchedule = schedule.scheduleJob(cron, async function () {
+        const status = await cacheJs.get(jobsLabel)
         if (status) {
-            
         }
     });
 }
 
-exports.OnehourJob = async function () {
+const OnehourJob = async function () {
     const jobsLabel = "OnehourJob";
-    jobSwitch.set(jobsLabel, 1);
-    const cron = GetCronMap().get(jobsLabel)
-    TenMinutesSchedule= schedule.scheduleJob(cron, function () {
-        const status = jobSwitch.get(jobsLabel);
+    const cron = cacheJs.get("cron"+jobsLabel);
+    OnehourSchedule = schedule.scheduleJob(cron, async function () {
+        const status = await cacheJs.get(jobsLabel)
         if (status) {
-            
         }
     });
 }
 
-exports.EverydayJob = async function () {
+const EverydayJob = async function () {
     const jobsLabel = "EverydayJob";
-    jobSwitch.set(jobsLabel, 1);
-    const cron = GetCronMap().get(jobsLabel)
-    TenMinutesSchedule= schedule.scheduleJob(cron, function () {
-        const status = jobSwitch.get(jobsLabel);
+    const cron = cacheJs.get("cron"+jobsLabel);
+    EverydaySchedule = schedule.scheduleJob(cron, async function () {
+        const status = await cacheJs.get(jobsLabel)
         if (status) {
-            
         }
     });
 }
 
-// exports.AddNewJob = async (cronTime ) => {
-//     const newschedule = schedule.scheduleJob(cronTime , function(){
-//         // console.log('OneMinuteJob');
-//         cacheJs.set('OneMinuteJob', 1);
-//     });
-// }
+exports.AddNewJob = async (cronTime ) => {
+    const newschedule = schedule.scheduleJob(cronTime, function () {
+        
+    });
+}

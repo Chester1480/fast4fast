@@ -6,15 +6,20 @@ const AutoLoad = require('@fastify/autoload')
 const config = require('config');
 const cpuInfo = require('os').cpus();
 
-const schedule = require('./services/functions/schedule');
 const wss = require('./services/functions/ws');
 
 const { mongo } = require('./services/database/databasepackage');
 const { dayJs } = require('./services/utils/utilspackage');
 // const osLocale = require('os-locale'); //可以查看user 系統語系
 const y18n = require("y18n");
+
+//機器人服務類
 //const telegram = require('./services/functions/telegram');
-const discord = require('./services/functions/discord');
+//const discord = require('./services/functions/discord');
+
+//排程
+const schedule = require('./services/functions/schedule');
+schedule.excute();
 
 module.exports = async function (fastify, opts) {
   // const __ = y18n({
@@ -121,7 +126,7 @@ module.exports = async function (fastify, opts) {
   // through your application
   
   fastify.addHook('onRequest', async (req, reply) => {
-    console.log(req);
+    //console.log(req);
     //url
     //method 
     
