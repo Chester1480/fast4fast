@@ -103,7 +103,7 @@ const OneMinuteJob = async function () {
     OneMinuteSchedule = schedule.scheduleJob(cron, async function () {
         const status = await cacheJs.get(jobsLabel)
         if (status) {
-            console.log('OneMinuteJob')
+            // console.log('OneMinuteJob')
         }
     });
 }

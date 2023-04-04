@@ -2,6 +2,7 @@
 
 const path = require('path')
 const AutoLoad = require('@fastify/autoload')
+const NODE_ENV = process.env.NODE_ENV;
 
 const config = require('config');
 const cpuInfo = require('os').cpus();
@@ -17,9 +18,10 @@ const y18n = require("y18n");
 //const telegram = require('./services/functions/telegram');
 //const discord = require('./services/functions/discord');
 
-//排程
-const schedule = require('./services/functions/schedule');
-schedule.excute();
+//#region 排程
+// const schedule = require('./services/functions/schedule');
+// schedule.excute();
+//#endregion
 
 module.exports = async function (fastify, opts) {
   // const __ = y18n({
@@ -51,9 +53,7 @@ module.exports = async function (fastify, opts) {
   });
   //#endregion
   
-  //#region 排程
-  // await schedule.OneMinuteJob();
-  //#endregion
+
 
   // await wss.Start();
   // 攔截錯誤
@@ -124,21 +124,57 @@ module.exports = async function (fastify, opts) {
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application
-  
+  const routeranalyze = require('./services/functions/routeranalyze');
+  //每次 call api都會經過 像middleware一樣
   fastify.addHook('onRequest', async (req, reply) => {
-    //console.log(req);
-    //url
-    //method 
+    // console.log(Object.keys(req.raw));
+    //const headers = req.raw.rawHeaders[0];
+    
+    const { url, method, query, body, raw } = req;
+    const { authorization, host } = req.headers;
+
+    //routeranalyze.strategies()
+    //req.headers['user-agent']
+    if (url !== "" ) {
+      const route = url.split('/')[1];
+
+      //#region
+      //url: '/BackStage/GetScheduleSwitch',
+      //method: 'GET',
+      //#endregion
+      //params
+
+      const parameters = {
+        routerPrefix:route,//網址
+        ip:req.socket.remoteAddress,//client ip
+        host,//主機domain
+        authorization,//hearder authorization
+        url, 
+        method,
+        query,
+        body,
+        raw
+      }
+      
+      //每次 request 都需要處理
+      const result = await routeranalyze.strategies(parameters)
+      if (result.statusCode != 200) {
+        return reply.send(result);
+      }
+     
+    }
+
+    
     
   });
 
+  //註冊差件
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: Object.assign({}, opts)
   })
 
-  // This loads all plugins defined in routes
-  // define your routes in one of these
+  //註冊API路由
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
