@@ -21,6 +21,9 @@ module.exports = async function (fastify, opts) {
       account,
       password,
       rePassword,
+      name,
+      birthday,
+      gender,
       email,
       phoneNumber,
     } = request.body;
@@ -37,12 +40,18 @@ module.exports = async function (fastify, opts) {
 
     const data = {
       account,
-      password:bcryptHashPassword,
+      password: bcryptHashPassword,
+      name,
+      birthday,
+      gender,
       email,
       phoneNumber,
+      type: "n",
+      registerIp:"" ,
+      registerDate: Date.now(),
     }
     const result = mongo.insert("UserData", [data]);
-    
+
     //註冊成功直接登入或是導向登入頁
     return {
       statusCode: "200",
