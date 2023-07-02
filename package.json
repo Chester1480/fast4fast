@@ -8,9 +8,9 @@
   },
   "scripts": {
     "test": "tap \"test/**/*.test.js\"",
-    "dev": "set NODE_ENV=dev&&fastify start -w app.js",
-    "prod": "set NODE_ENV=prod&&fastify start -w app.js",
-    "fastify": "set NODE_ENV=dev&&fastify start -w app.js",
+    "dev": "set NODE_ENV=dev&&fastify start -p 3100 -w app.js",
+    "prod": "set NODE_ENV=prod&&fastify start  -p 3100 -w app.js",
+    "fastify": "set NODE_ENV=dev&&fastify start  -p 3100 -w app.js",
     "defaultfastify": "fastify start -w -l info app.js"
   },
   "keywords": [],

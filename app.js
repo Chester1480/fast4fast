@@ -180,4 +180,5 @@ module.exports = async function (fastify, opts) {
     options: Object.assign({}, opts)
   })
   
+
 }
