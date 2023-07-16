@@ -1,5 +1,4 @@
 const config = require('config');
-var SpotifyWebApi = require('spotify-web-api-node');
 const clientId = config.get('spotify').clientId;
 const clientSecret = config.get('spotify').clientSecret;
 
@@ -28,13 +27,17 @@ const getToken = async () =>{
 }
 
 exports.search = async (parameters) => {
-    const { q , type , limit,  offset } = parameters;
+    // 要搜索的以逗號分隔的項目類型列表。
+    // 搜索結果包括所有指定項目類型的命中。
+    // 例如：q = abacab & type=album, track返回與“abacab”匹配的專輯和曲目。
+    const { q , type , market ,limit,  offset } = parameters;
     const token = await getToken();
     //market
     const url = 'https://api.spotify.com/v1/search';
     const params = {
         q,
         type, 
+        market,
         limit, 
         offset,
         include_external:"audio"

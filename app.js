@@ -5,6 +5,7 @@ const AutoLoad = require('@fastify/autoload')
 const NODE_ENV = process.env.NODE_ENV;
 
 const config = require('config');
+const originIp = config.get('originIp');
 const cpuInfo = require('os').cpus();
 
 const wss = require('./services/functions/ws');
@@ -22,25 +23,24 @@ const y18n = require("y18n");
 // const schedule = require('./services/functions/schedule');
 // schedule.excute();
 //#endregion
-
 module.exports = async function (fastify, opts) {
   // const __ = y18n({
   //   locale: 'tw',
   //   directory: './locales'
   // }).__
   
-  // fastify.register(require('@fastify/cors'), {
-  //   origin: '*',
-  //   methods: 'GET,PUT,POST,DELETE,OPTIONS',
-  //   // put your options here
-  // })
+  fastify.register(require('@fastify/cors'), {
+    origin: originIp,
+    methods: 'GET,PUT,POST,DELETE,OPTIONS',
+    // put your options here
+  })
 
   //#region 流量控制
   fastify.register(require('@fastify/rate-limit'), {
     max: 1000,
     timeWindow: 5000,
     cache: 10000,
-    // allowList: ['127.0.0.1'],
+    allowList: ['127.0.0.1'],
     // redis: new Redis({ host: '127.0.0.1' }),
     keyGenerator: function (req) { /* ... */ },
     errorResponseBuilder: function (req, context) { /* ... */ },

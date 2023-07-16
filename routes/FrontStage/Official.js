@@ -1,20 +1,25 @@
+const spotify = require('../../services/sdk/spotify');
+const fluent = require('fluent-json-schema');
 
 module.exports = async function (fastify, opts) {
 
-  fastify.get('/GetBoard', async function (request, reply) {
-    const { userInfo } = request;
-    return getJobSwitch();
-  })
+  fastify.get('/GetIndexData', { schema: {
+    // querystring : fluent.object()
+    //     .prop('account', fluent.string().minLength(6).maxLength(30).required())
+    //     .prop('password', fluent.string().minLength(6).maxLength(30).required())
+    }
+  }, async function (request, reply) {
+    const parameters = request.query;
     
-  fastify.get('/GetIndexData', async function (request, reply) {
-    const { userInfo } = request;
-    return getJobSwitch();
+    const result = await spotify.search(parameters);
+
+    const response = {
+      code: "1000",
+      message: "",
+      data:result,
+    };
+    
+    return reply.send(response)
   })
-
-    //   fastify.post('/ChangeScheduleSwitch', async function (request, reply) {
-    //     const { jobName, status } = request.body;
-    //     const { userInfo } = request;
-    //     return setJobSwitch(jobName,status);
-    //   })
-
+  
 }
