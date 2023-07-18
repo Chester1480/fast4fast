@@ -26,6 +26,36 @@ const getToken = async () =>{
     return response.data.access_token;
 }
 
+exports.newReleases = async (parameters) => {
+    // 要搜索的以逗號分隔的項目類型列表。
+    // 搜索結果包括所有指定項目類型的命中。
+    // 例如：q = abacab & type=album, track返回與“abacab”匹配的專輯和曲目。
+    const { country  ,limit,  offset } = parameters;
+    const token = await getToken();
+    //market
+    const url = 'https://api.spotify.com/v1/browse/new-releases';
+    const params = {
+        country,
+        limit, 
+        offset,
+        include_external:"audio"
+    }
+
+    const result = await axios.get(url, {
+            params,
+            headers: {
+                Accept: 'application/json',
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+    })
+    const response = {
+        totalCount:result.data.total,
+        data:result.data
+    }
+    return response;
+}
+
 exports.search = async (parameters) => {
     // 要搜索的以逗號分隔的項目類型列表。
     // 搜索結果包括所有指定項目類型的命中。
