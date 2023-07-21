@@ -49,11 +49,71 @@ exports.newReleases = async (parameters) => {
                 'Content-Type': 'application/json',
             },
     })
+
+    let spotifyIds = [];   
+    result.data.albums.items.forEach(element => {
+        spotifyIds.push(element.id)
+    });
+
+    const tracksByAlbums = await getAlbums(spotifyIds);
+    let albumMap = new Map();
+
+    tracksByAlbums.data.albums.forEach(album => {
+
+        const trackCollection = [];
+        album.tracks.items.forEach(track => {
+            trackCollection.push(track);
+        })
+
+        albumMap.set(album.id, trackCollection);
+    })
+
+    result.data.albums.items.map(element => {
+        element.tracks = albumMap.get(element.id);
+        return;
+    });
+
     const response = {
         totalCount:result.data.total,
         data:result.data
     }
     return response;
+}
+
+const getAlbums= async (spotifyIds) => { 
+    
+    const url = 'https://api.spotify.com/v1/albums';
+    const token = await getToken();
+    const params = {
+        ids:spotifyIds.join(','), 
+    }
+    const result = await axios.get(url, {
+        params,
+        headers: {
+            Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+    })
+    return result;
+}
+
+const getTracks = async (spotifyIds) => { 
+    
+    const url = 'https://api.spotify.com/v1/tracks';
+    const token = await getToken();
+    const params = {
+        ids:spotifyIds.join(','), 
+    }
+    const result = await axios.get(url, {
+        params,
+        headers: {
+            Accept: 'application/json',
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+    })
+    return result;
 }
 
 exports.search = async (parameters) => {
