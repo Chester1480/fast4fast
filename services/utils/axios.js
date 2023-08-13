@@ -1,26 +1,20 @@
 const axios = require('axios');
 
-exports.get = async function (url, data) {
-
-    const result = await axios({
-        method: 'get',
-        url,
-        data
-    }).then(function (response) {
-        // handle success
-        // console.log(response);
-    })
+exports.get = async function (url, parameters ) {
+    const { headers , params } = parameters;
+    const result = await axios.get(url,{
+        headers,
+        params
+    });
     return result;
 }
 
-exports.post = async function (url,data) {
-    const result = await axios({
-        method: 'post',
-        url,
+exports.post = async function (url, parameters) {
+    const { headers , body } = parameters;
+    const result = await axios.post(url,{
+        headers,
+        body,
         data
-    }).then(function (response) {
-        // handle success
-        // console.log(response);
-    })
+    });
     return result;
 }
