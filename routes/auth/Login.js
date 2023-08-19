@@ -18,13 +18,13 @@ module.exports = async function (fastify, opts) {
 
   fastify.post('/AccountLogin', { schema: accountLoginVerify}, async function (request, reply) {
     const { account, password } = request.body;
-    const userInfo = mongo.find("UserInfo", account);
-    
+    const userInfo = await mongo.find("UserInfo", {account});
+    console.log(userInfo);
     //查詢帳號是否存在
-    if (!userInfo) {
-      return {
-        statusCOde: "400",
-        message: "account is not exist or password is wrong..",
+    if (userInfo.length === 0 ) {
+      return{
+        statusCode: "400",
+        message: "password is wrong..",
         data:""
       }
     }
@@ -35,8 +35,8 @@ module.exports = async function (fastify, opts) {
     
     if (!isCompare) {
       return {
-        statusCOde: "400",
-        message: "account is not exist or password is wrong.",
+        statusCode: "400",
+        message: "password is wrong..",
         data:""
       }
     }
@@ -44,7 +44,6 @@ module.exports = async function (fastify, opts) {
     const userData = {
       id: userInfo._id,
       account: userInfo.account,
-      email: userInfo.email,
       email: userInfo.email,
     }
 
