@@ -1,19 +1,16 @@
 const ip = require('ip');
 const NODE_ENV = process.env.NODE_ENV;
 const jwt = require('jsonwebtoken');
-const { GetStatusCode } = require('../share/model');
+const { getTextCode } = require('../ShareModule/model');
+const config = require('config');
+const jwtSecret = config.get('jwtSecret');
 
-const tokenSecret = '';
 //分析路由 擷取的所有內容 加以分析
 exports.strategies = async (parameters) => {
     
     // 黑名單的ip 直接返回 不給使用所有api
     // if (getBlackList(ip)) {
-    //      return {
-    //         statusCode: "1002",
-    //         message: GetStatusCode("1002"),
-    //         data:""
-    //     };
+    //      return {};
     // }
 
     const {
@@ -44,9 +41,6 @@ exports.strategies = async (parameters) => {
         // if (whiteListRoute.has(routerPrefix)) {
         //     if (!getWhiteList(ip)) { 
         //         return {
-        //             statusCode: "1002",
-        //             message: GetStatusCode("1002"),
-        //             data:""
         //         };
         //     }
         // }
@@ -55,21 +49,30 @@ exports.strategies = async (parameters) => {
 
             if (!authorization) {
                 return {
-                    statusCode: "1002",
-                    message: GetStatusCode("1002"),
-                    data:""
+                    statusCode: 400,
+                    message: getTextCode("1003"),
+                    data:[]
                 };
             }
 
             const jwtToken = authorization.split(' ')[1];
-            var decoded = jwt.verify(jwtToken, tokenSecret);
+
+            if (!jwtToken) {
+                return {
+                    statusCode: 400,
+                    message: getTextCode("1003"),
+                    data:[]
+                };
+            }
+
+            var decoded = jwt.verify(jwtToken, jwtSecret);
 
             //解析token錯誤
             if (!decoded) {
                 return {
-                    statusCode: "1001",
-                    message: GetStatusCode("1001"),
-                    data:""
+                    statusCode: 400,
+                    message: getTextCode("1002"),
+                    data:[]
                 };
             } else {
                 req.userInfo = decoded;
@@ -80,7 +83,7 @@ exports.strategies = async (parameters) => {
     return {
         statusCode: 200,
         message: "",
-        data:""
+        data:[]
     };
    
     // const result = await fns[routerPrefix]();
