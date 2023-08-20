@@ -1,6 +1,7 @@
 const fluent = require('fluent-json-schema');
 const { mongo } = require('../../services/database/databasepackage');
 const { encryptJs } = require('../../services/utils/utilspackage');
+const { getStatusCode } = require('../../services/share/model');
 
 const config = require('config');
 const passwordSecret = config.get('passwordSecret');
@@ -28,10 +29,20 @@ module.exports = async function (fastify, opts) {
       phoneNumber,
     } = request.body;
 
+    const isExist = await mongo.find("UserData", { account });
+
+    if (isExist) {
+      return {
+        statusCode: "400",
+        message: "rePassword_is_not_same",
+        data:""
+      }
+    }
+
     if (password != rePassword) {
       return {
         statusCode: "400",
-        message: "password and rePassword is not same",
+        message: "rePassword_is_not_same",
         data:""
       }
     }
@@ -39,6 +50,7 @@ module.exports = async function (fastify, opts) {
     const bcryptHashPassword = await encryptJs.bcryptHash(password, passwordSecret);
 
     const data = {
+      avatar,
       account,
       password: bcryptHashPassword,
       name,
@@ -50,7 +62,7 @@ module.exports = async function (fastify, opts) {
       registerIp:"" ,
       registerDate: Date.now(),
     }
-    const result = mongo.insert("UserData", [data]);
+    const result = await mongo.insert("UserData", [data]);
 
     //註冊成功直接登入或是導向登入頁
     return {
