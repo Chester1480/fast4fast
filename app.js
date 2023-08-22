@@ -133,11 +133,24 @@ module.exports = async function (fastify, opts) {
     const { url, method, query, body, raw } = req;
     const { authorization, host } = req.headers;
 
+    //request.params
+    //request.query
+    //request.log
+
+    //request.raw.url
+    //request.raw.method
+    
+    //request.raw.client._peername.address
+    //request.raw.client._peername.address
+
+    // console.log(request.raw.complete)
+    // console.log(Object.keys(request.raw))
+
     //routeranalyze.strategies()
     //req.headers['user-agent']
     if (url !== "" ) {
       const route = url.split('/')[1];
-
+      console.log(route)
       //#region
       //url: '/BackStage/GetScheduleSwitch',
       //method: 'GET',
@@ -179,6 +192,7 @@ module.exports = async function (fastify, opts) {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
   })
+  console.log("website ready ")
   
 
 }

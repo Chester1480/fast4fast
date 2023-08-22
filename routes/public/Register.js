@@ -29,10 +29,7 @@ module.exports = async function (fastify, opts) {
       email,
       phoneNumber,
     } = request.body;
-
-    const isExist = await mongo.find("UserData", { account });
-    console.log(isExist)
-
+    
     if (password != rePassword) {
       return {
         statusCode: 400,
@@ -40,6 +37,8 @@ module.exports = async function (fastify, opts) {
         data:[]
       }
     }
+
+    const isExist = await mongo.find("UserData", { account });
 
     if (isExist.length >0) {
       return {
@@ -55,7 +54,7 @@ module.exports = async function (fastify, opts) {
       avatar,
       account,
       password: bcryptHashPassword,
-      contryCOde:"",
+      contryCode:"",
       active: 1,
       address,
       nickname,
@@ -66,12 +65,16 @@ module.exports = async function (fastify, opts) {
       lastLoginTme: null,
       lastLogIp:  null,
       register: {
-        registerIp: "",
+        registerIp: request.raw.client._peername.address,
         registerDate: Date.now(),
       },
       premiumExpiredTime: null,
+      validCode: ""
     }
+    
     const result = await mongo.insert("UserData", [data]);
+
+    //sendEnail or sms
 
     //註冊成功直接登入或是導向登入頁
     return {
@@ -79,6 +82,10 @@ module.exports = async function (fastify, opts) {
       message: getLangCode("1008"),
       data:[]
     }
+  })
+
+  fastify.get('/ValidRegisterUrl', async function (request, reply) { 
+    const { } = request.query
   })
   
 }
