@@ -127,36 +127,14 @@ module.exports = async function (fastify, opts) {
   const routeranalyze = require('./services/functions/routeranalyze');
   //每次 call api都會經過 像middleware一樣
   fastify.addHook('onRequest', async (req, reply) => {
-    // console.log(Object.keys(req.raw));
-    //const headers = req.raw.rawHeaders[0];
-    
+
     const { url, method, query, body, raw } = req;
     const { authorization, host } = req.headers;
 
-    //request.params
-    //request.query
-    //request.log
-
-    //request.raw.url
-    //request.raw.method
-    
-    //request.raw.client._peername.address
-    //request.raw.client._peername.address
-
-    // console.log(request.raw.complete)
-    // console.log(Object.keys(request.raw))
-
-    //routeranalyze.strategies()
-    //req.headers['user-agent']
     if (url !== "" ) {
       const route = url.split('/')[1];
-      console.log(route)
-      //#region
-      //url: '/BackStage/GetScheduleSwitch',
-      //method: 'GET',
-      //#endregion
-      //params
 
+      //#region
       const parameters = {
         routerPrefix:route,//網址
         ip:req.socket.remoteAddress,//client ip
@@ -166,7 +144,8 @@ module.exports = async function (fastify, opts) {
         method,
         query,
         body,
-        raw
+        raw,
+        route
       }
       
       //每次 request 都需要處理
@@ -192,7 +171,6 @@ module.exports = async function (fastify, opts) {
     dir: path.join(__dirname, 'routes'),
     options: Object.assign({}, opts)
   })
-  console.log("website ready ")
-  
+  console.log("website ready "+ new Date())
 
 }

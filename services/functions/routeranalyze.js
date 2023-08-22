@@ -22,7 +22,8 @@ exports.strategies = async (parameters) => {
         method,
         query,
         body,
-        raw
+        raw,
+        route
     } = parameters;
     
     // const whiteListRoute = new Set([
@@ -31,51 +32,53 @@ exports.strategies = async (parameters) => {
     
     //需要驗證 authorization的路由前墜
     const permissionRoute = new Set([
-        'BackStage'
+        'BackStage',
+        'FrontStage'
     ]);
 
     //正式環境需要驗證 authorization
     if (NODE_ENV == "prod") {
+        //public 不用判斷 直接給過
+        if (route != 'public') {
+            // 需要加白名單才能進入的路由
+            // if (whiteListRoute.has(routerPrefix)) {
+            //     if (!getWhiteList(ip)) { 
+            //         return {
+            //         };
+            //     }
+            // }
+            if (permissionRoute.has(routerPrefix)) {
 
-        // 需要加白名單才能進入的路由
-        // if (whiteListRoute.has(routerPrefix)) {
-        //     if (!getWhiteList(ip)) { 
-        //         return {
-        //         };
-        //     }
-        // }
+                if (!authorization) {
+                    return {
+                        statusCode: 400,
+                        message: getTextCode("1003"),
+                        data: []
+                    };
+                }
 
-        if (permissionRoute.has(routerPrefix)) {
+                const jwtToken = authorization.split(' ')[1];
 
-            if (!authorization) {
-                return {
-                    statusCode: 400,
-                    message: getTextCode("1003"),
-                    data:[]
-                };
-            }
+                if (!jwtToken) {
+                    return {
+                        statusCode: 400,
+                        message: getTextCode("1003"),
+                        data: []
+                    };
+                }
 
-            const jwtToken = authorization.split(' ')[1];
+                var decoded = jwt.verify(jwtToken, jwtSecret);
 
-            if (!jwtToken) {
-                return {
-                    statusCode: 400,
-                    message: getTextCode("1003"),
-                    data:[]
-                };
-            }
-
-            var decoded = jwt.verify(jwtToken, jwtSecret);
-
-            //解析token錯誤
-            if (!decoded) {
-                return {
-                    statusCode: 400,
-                    message: getTextCode("1002"),
-                    data:[]
-                };
-            } else {
-                req.userInfo = decoded;
+                //解析token錯誤
+                if (!decoded) {
+                    return {
+                        statusCode: 400,
+                        message: getTextCode("1002"),
+                        data: []
+                    };
+                } else {
+                    req.userInfo = decoded;
+                }
             }
         }
     }
