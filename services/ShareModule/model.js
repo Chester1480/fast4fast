@@ -24,6 +24,7 @@ exports.getTextCode = (code) => {
         ["1006", "rePassword_is_not_same"],
         ["1007", "account_is_exist"],
         ["1008", "account_register_success"],
+        ["1009", "account_password_same"],
         //2 crud
         ["2000", "query_success"],
         ["2001", "query_fail_no_permission"],
