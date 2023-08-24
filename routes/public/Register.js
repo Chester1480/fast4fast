@@ -18,12 +18,12 @@ module.exports = async function (fastify, opts) {
     body : fluent.object()
       .prop('account', fluent.string().minLength(6).maxLength(30).required())
       .prop('password', fluent.string().minLength(6).maxLength(30).required())
-      .prop('address', fluent.string().minLength(6).maxLength(30).required())
-      .prop('nickname', fluent.string().minLength(2).maxLength(30).required())
+      .prop('address', fluent.string().minLength(6).maxLength(100).required())
+      .prop('nickname', fluent.string().minLength(1).maxLength(30).required())
       .prop('birthday', fluent.string().format(fluent.FORMATS.DATE).required())
       .prop('gender',  fluent.string().enum(Object.values(gender)).required())
       .prop('email', fluent.string().format(fluent.FORMATS.EMAIL).required())
-      .prop('phoneNumber', fluent.string().minLength(6).maxLength(30).required())
+      // .prop('phoneNumber', fluent.string().minLength(6).maxLength(30).required())
   }
   
   fastify.post('/AccountRegister', { schema: accountRegisterVerify }, async function (request, reply) {
@@ -36,7 +36,7 @@ module.exports = async function (fastify, opts) {
       birthday,
       gender,
       email,
-      phoneNumber,
+      // phoneNumber,
     } = request.body;
 
     if (account == password) {
@@ -78,7 +78,7 @@ module.exports = async function (fastify, opts) {
       birthday,
       gender,
       email,
-      phoneNumber,
+      // phoneNumber,
       lastLoginTme: null,
       lastLogIp:  null,
       register: {
