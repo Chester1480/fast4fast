@@ -21,3 +21,9 @@ Run the test cases.
 ## Learn More
 
 To learn Fastify, check out the [Fastify documentation](https://www.fastify.io/docs/latest/).
+
+
+安裝 npm-check-updates：npm install -g npm-check-updates
+### `檢查套件 升級到最新版本`
+ncu '/@fastify.*/'
+npm install

@@ -74,24 +74,24 @@ module.exports = async function (fastify, opts) {
     }
   });
 
-  fastify.register(require('@fastify/swagger'), {
-    swagger: {
-      info: {
-        title: 'Test swagger',
-        description: 'Testing the Fastify swagger API',
-        version: '0.1.0'
-      },
-      schemes: ["http", "https"],
-      consumes: ["application/json"],
-      produces: ["application/json"],
-      tags: [{ name: "Default", description: "Default" }],
-    }
-  })
+  // fastify.register(require('@fastify/swagger'), {
+  //   swagger: {
+  //     info: {
+  //       title: 'Test swagger',
+  //       description: 'Testing the Fastify swagger API',
+  //       version: '0.1.0'
+  //     },
+  //     schemes: ["http", "https"],
+  //     consumes: ["application/json"],
+  //     produces: ["application/json"],
+  //     tags: [{ name: "Default", description: "Default" }],
+  //   }
+  // })
 
-  fastify.register(require('@fastify/swagger-ui'), {
-    routePrefix: "/docs",
-    exposeRoute: true,
-  })
+  // fastify.register(require('@fastify/swagger-ui'), {
+  //   routePrefix: "/docs",
+  //   exposeRoute: true,
+  // })
 
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused

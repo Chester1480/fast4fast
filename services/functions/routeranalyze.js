@@ -3,7 +3,7 @@ const NODE_ENV = process.env.NODE_ENV;
 const jwt = require('jsonwebtoken');
 const { getTextCode } = require('../ShareModule/model');
 const config = require('config');
-const jwtSecret = config.get('jwtSecret');
+const jwtSecret = config.get('jwt').secret;
 
 //分析路由 擷取的所有內容 加以分析
 exports.strategies = async (parameters) => {
