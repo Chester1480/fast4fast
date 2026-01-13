@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "This project was bootstrapped with Fastify-CLI.",
   "main": "app.js",
+  "bin": "app.js",
   "directories": {
     "test": "test"
   },
@@ -11,7 +12,16 @@
     "dev": "set NODE_ENV=dev&&fastify start -p 3100 -w app.js",
     "prod": "set NODE_ENV=prod&&fastify start  -p 3100 -w app.js",
     "fastify": "set NODE_ENV=dev&&fastify start  -p 3100 -w app.js",
-    "defaultfastify": "fastify start -w -l info app.js"
+    "defaultfastify": "fastify start -w -l info app.js",
+    "pkg": "pkg . --targets node18-win-x64"
+  },
+  "pkg": {
+    "scripts": "app.js",
+    "targets": [
+      "win",
+      "macos",
+      "linux"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -42,7 +52,6 @@
     "ioredis": "^5.3.1",
     "ip": "^1.1.8",
     "jsonwebtoken": "^9.0.0",
-    "knex": "^2.4.2",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "mongodb": "^5.0.1",
@@ -64,7 +73,6 @@
     "y18n": "^5.0.8"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
     "tap": "^16.1.0"
   }
 }
